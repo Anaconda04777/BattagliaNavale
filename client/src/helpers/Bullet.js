@@ -8,9 +8,15 @@ export default class Bullet extends Phaser.Physics.Arcade.Sprite {
   }
 
   //quando il proiettile viene sparato
-  fire(x, y, angle, collisionObject, danno) {
+  fire(x, y, angle, collisionObject, danno, texture) {
     //setto la scala
     this.setScale(0.5, 0.5);
+    //setto la texture
+    console.log(texture);
+    if (texture != "bullet") {
+      this.setTexture(texture);
+      this.setScale(0.4, 0.4);
+    }
 
     //(in caso di ricochetto) (cosa mi suggerisci copilot? :D)
 
@@ -66,7 +72,7 @@ export default class Bullet extends Phaser.Physics.Arcade.Sprite {
       );
     }
 
-    this.scene.socket.emit("bulletShot", x, y, angle, this.id);
+    this.scene.socket.emit("bulletShot", x, y, angle, this.id, texture);
   }
 
   preUpdate(time, delta) {

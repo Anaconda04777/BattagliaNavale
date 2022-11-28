@@ -9,7 +9,7 @@ export default class BulletHandler extends Phaser.Physics.Arcade.Group {
   }
 
   //sparo un proiettile
-  fireBullet(x, y, angle, collisionObject, danno) {
+  fireBullet(x, y, angle, collisionObject, danno, texture = "bullet") {
     //prende il primo elemento del gruppo con active false
 
     //se il gruppo di proiettili è vuoto (sono stati tutti sparati) ricarico il gruppo
@@ -21,7 +21,7 @@ export default class BulletHandler extends Phaser.Physics.Arcade.Group {
     if (bullet) {
       //passo la posizione dell'ammiragli, l'angolo e la nave con cui colliderà
       this.scene.bulletInGame++;
-      bullet.fire(x, y, angle, collisionObject, danno);
+      bullet.fire(x, y, angle, collisionObject, danno, texture);
     }
   }
 

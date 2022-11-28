@@ -1,5 +1,5 @@
 export default class Ship {
-  constructor(scene, type, hp, x, y, ourShip, fuel, ability) {
+  constructor(scene, type, hp, x, y, ourShip, fuel, ability, abilityCooldown) {
     this.type = type;
     this.hp = hp;
     this.x = x;
@@ -8,6 +8,10 @@ export default class Ship {
     this.ourShip = ourShip;
     this.fuel = fuel;
     this.ability = ability;
+
+    this.abilityCooldown = abilityCooldown;
+    this.abilityCount = this.abilityCooldown;
+
     this.id = null;
     //console.log(this.id);
     this.isColliding = false;
@@ -34,7 +38,8 @@ export default class Ship {
           self.scene.InputHandler.movedShipIsColliding = true;
         }
       );
-    }
+    } else this.bodyReference.alpha = 0.00000001;
+
     this.bodyReference.data = this;
     //console.log(this.bodyReference.body);
   }
@@ -68,7 +73,7 @@ export default class Ship {
     this.scene.socket.emit("shipHit", danno, this.id);
     if (this.hp <= 0) {
       this.bodyReference.setActive(false);
-      this.bodyReference.setVisible(false);
+      this.bodyReference.alpha = 0.3;
       this.bodyReference.setInteractive(false);
       console.log("ship destroyed");
     }

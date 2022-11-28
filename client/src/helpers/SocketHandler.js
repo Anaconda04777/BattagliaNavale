@@ -127,14 +127,16 @@ export default class SocketHandler {
     });
 
     //intercetto il messaggio inviato dal server che mi indica che l'avversario ha sparato
-    scene.socket.on("bulletShot", (x, y, angle, bulletId) => {
+    scene.socket.on("bulletShot", (x, y, angle, bulletId, texture) => {
       //starting x and y
       //console.log("bulletShot: " + x + ", " + y + ", " + angle);
       //creo il proiettile sparato dall'avversario
-      let bullet = scene.physics.add.sprite(scene.scale.width - x, y, "bullet");
+      let bullet = scene.physics.add.sprite(scene.scale.width - x, y, texture);
       //imposto la rotazione del proiettile (l'angolo è dato in radianti)
       //essendo nemico devo invertire l'angolo
       bullet.setAngle(-Phaser.Math.RadToDeg(angle));
+      bullet.setScale(0.5, 0.5);
+      if (texture == "torpedo") bullet.setScale(0.4, 0.4);
       //lo flippo per farlo puntare nella direzione giusta
       bullet.flipX = true;
       //TODO: sistemare scala proiettile

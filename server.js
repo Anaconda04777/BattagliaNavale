@@ -120,8 +120,8 @@ io.on("connection", function (socket) {
   });
 
   //proiettili
-  socket.on("bulletShot", (x, y, angle, bulletId) => {
-    socket.broadcast.emit("bulletShot", x, y, angle, bulletId);
+  socket.on("bulletShot", (x, y, angle, bulletId, texture) => {
+    socket.broadcast.emit("bulletShot", x, y, angle, bulletId, texture);
   });
 
   socket.on("bulletDestruction", (bulletId) => {

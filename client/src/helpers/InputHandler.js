@@ -12,9 +12,11 @@ export default class InputHandler {
       //controllo che il target del click non sia undefined
       //che non sia la zona del nostro campo
       //che non sia una nave avversaria
+      console.log(gameObject);
       if (gameObject[0] !== undefined) {
         if (gameObject[0].type != "Sprite") {
           return;
+          //TODO: riguardare sta roba un po' strana
         } else if (gameObject[0].data.ourShip) return;
 
         //se sto tirando nell'acqua aggiungo l'oggetto che indicerà al bullet
@@ -26,6 +28,7 @@ export default class InputHandler {
         !this.movedShipIsColliding
           ? scene.LogicHandler.missCollider(pointer.x, pointer.y)
           : null;
+
       //------------------------------------------------------------
 
       //se il target del click è una nave
@@ -40,11 +43,28 @@ export default class InputHandler {
         scene.alreadyFired = true;
         //setto la posizione da cui partiranno i colpi, ovvero la nave ammiraglia
         //di default la battleship
-        //TODO: cambiare la nave ammiraglia quando viene affondata
-        let naveAmmiraglia = [
-          scene.player.player.flotta.battleship.bodyReference.x,
-          scene.player.player.flotta.battleship.bodyReference.y,
-        ];
+        //TODO: se rimane solo il sottomarino, non puoi più sparare, puoi usare solo la sua abilità
+        let naveAmmiraglia;
+        if (scene.subAbilityActive) {
+          console.log("subAbilityActive");
+          naveAmmiraglia = [
+            scene.player.player.flotta.submarine.bodyReference.x,
+            scene.player.player.flotta.submarine.bodyReference.y,
+          ];
+        } else {
+          Object.entries(scene.player.player.flotta)
+            .reverse()
+            .map((ship) => {
+              console.log(ship[1]);
+              if (ship[1].hp > 0) {
+                naveAmmiraglia = [
+                  ship[1].bodyReference.x,
+                  ship[1].bodyReference.y,
+                ];
+              }
+            });
+        }
+
         //chiamo la funzione di sparo nella classe che gestisce i proiettili
         scene.BulletHandler.fireBullet(
           //gli passo la posizione della nave ammiraglia
@@ -60,7 +80,8 @@ export default class InputHandler {
           //la nave a cui sto sparando
           gameObject[0],
           //danno che fa il proiettile #TODO: l'abilità che cambia il danno del proiettile è quella del som
-          1
+          scene.subAbilityActive ? 1000 : 1,
+          scene.subAbilityActive ? "torpedo" : "bullet"
         );
       }
     });
@@ -89,18 +110,23 @@ export default class InputHandler {
     scene.input.on("pointerdown", (pointer, gameObject) => {
       //console.log(gameObject[0]);
       //tengo il focus solo se ciò che ho cliccato è la mia nave
-      if (gameObject[0] !== undefined && !this.shipInMovement && scene.isMyTurn) {
+      if (
+        gameObject[0] !== undefined &&
+        !this.shipInMovement &&
+        scene.isMyTurn &&
+        gameObject[0].data.hp > 0
+      ) {
         if (gameObject[0].type === "Sprite" && gameObject[0].data.ourShip) {
-            //tolgo il focus dall'icon
-            Object.entries(scene.icon).map((icon) => {
-              if (icon[1]) {
-                console.log(icon);
-                icon[1].clearTint();
-              }
-            });
-            scene.UIHandler.abilitySelected = null;
+          //tolgo il focus dall'icon
+          Object.entries(scene.icon).map((icon) => {
+            if (icon[1]) {
+              console.log(icon);
+              icon[1].clearTint();
+            }
+          });
+          scene.UIHandler.abilitySelected = null;
           this.focus = gameObject[0];
-          scene.UIHandler.showConsumables(this.focus.data.ability);
+          scene.UIHandler.showConsumables(this.focus.data.ability, this.focus);
         }
       }
     });

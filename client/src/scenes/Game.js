@@ -17,6 +17,8 @@ export default class Game extends Phaser.Scene {
     this.numPlayers = 0;
     this.isMyTurn;
     this.gameStarted = false;
+    //per abilità destroyer
+    this.choosenShip = [];
   }
 
   preload() {
@@ -27,6 +29,7 @@ export default class Game extends Phaser.Scene {
     this.load.image("AircraftCarrier", "src/assets/AircraftCarrier.png");
 
     this.load.image("bullet", "src/assets/bullet.png");
+    this.load.image("torpedo", "src/assets/torpedo.png");
 
     this.load.image("movementIcon", "src/assets/movementIcon.png");
     this.load.image("battleshipAbility", "src/assets/battleshipAbility.png");
@@ -48,8 +51,8 @@ export default class Game extends Phaser.Scene {
         id: null,
         isReady: false,
         flotta: {
-          aircraftCarrier: new AircraftCarrier(this, 100, 100, true),
           battleship: new Battleship(this, 100, 150, true),
+          aircraftCarrier: new AircraftCarrier(this, 100, 100, true),
           cruiser: new Cruiser(this, 100, 200, true),
           cruiser2: new Cruiser(this, 100, 250, true),
           destroyer: new Destroyer(this, 100, 300, true),
@@ -61,12 +64,13 @@ export default class Game extends Phaser.Scene {
         id: null,
         isReady: false,
         flottaNemica: {
+          battleship: new Battleship(this, this.scale.width - 100, 150, false),
           aircraftCarrier: new AircraftCarrier(
             this,
             this.scale.width - 100,
             100
           ),
-          battleship: new Battleship(this, this.scale.width - 100, 150, false),
+
           cruiser: new Cruiser(this, this.scale.width - 100, 200, false),
           cruiser2: new Cruiser(this, this.scale.width - 100, 250, false),
           destroyer: new Destroyer(this, this.scale.width - 100, 300, false),

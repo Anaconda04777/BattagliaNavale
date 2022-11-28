@@ -39,7 +39,7 @@ export default class UIHandler {
         .setVisible(false);
 
       scene.icon.movementIcon.on("pointerdown", () => {
-        if (scene.isMyTurn && !scene.alreadyFired) {
+        if (scene.isMyTurn && !scene.alreadyFired && !scene.subAbilityActive) {
           if (this.abilitySelected == "movement") {
             scene.icon.movementIcon.clearTint();
             this.abilitySelected = null;
@@ -54,7 +54,8 @@ export default class UIHandler {
         if (
           scene.isMyTurn &&
           !scene.alreadyFired &&
-          !scene.InputHandler.shipInMovement
+          !scene.InputHandler.shipInMovement &&
+          scene.InputHandler.focus.data.abilityCount == 0
         ) {
           let shipAbility = scene.icon.abilityIcon.texture.key;
           if (this.abilitySelected == shipAbility) {
@@ -65,7 +66,12 @@ export default class UIHandler {
               case "battleshipAbility":
                 console.log(scene.InputHandler.focus);
                 scene.InputHandler.focus.data.battleshipAbility();
-
+                break;
+              case "subAbility":
+                scene.InputHandler.focus.data.submarineAbility();
+                break;
+              case "destroyerAbility":
+                scene.InputHandler.focus.data.destroyerAbility();
                 break;
             }
             scene.icon.abilityIcon.setTint(0x63b159);
@@ -75,12 +81,14 @@ export default class UIHandler {
       });
     };
 
-    this.showConsumables = (abilitySelected) => {
+    this.showConsumables = (abilitySelected, focus) => {
       if (scene.gameStarted) {
         let icon = scene.icon.abilityIcon;
         //console.log(icon);
         icon.setTexture(abilitySelected).setVisible(true);
         scene.icon.movementIcon.setVisible(true);
+        if (focus.data.abilityCount > 0) scene.icon.abilityIcon.alpha = 0.5;
+        else scene.icon.abilityIcon.alpha = 1;
       }
     };
 
