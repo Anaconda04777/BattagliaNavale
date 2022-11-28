@@ -89,8 +89,16 @@ export default class InputHandler {
     scene.input.on("pointerdown", (pointer, gameObject) => {
       //console.log(gameObject[0]);
       //tengo il focus solo se ciò che ho cliccato è la mia nave
-      if (gameObject[0] !== undefined && !this.shipInMovement) {
+      if (gameObject[0] !== undefined && !this.shipInMovement && scene.isMyTurn) {
         if (gameObject[0].type === "Sprite" && gameObject[0].data.ourShip) {
+            //tolgo il focus dall'icon
+            Object.entries(scene.icon).map((icon) => {
+              if (icon[1]) {
+                console.log(icon);
+                icon[1].clearTint();
+              }
+            });
+            scene.UIHandler.abilitySelected = null;
           this.focus = gameObject[0];
           scene.UIHandler.showConsumables(this.focus.data.ability);
         }
