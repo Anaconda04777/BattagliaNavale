@@ -7,12 +7,13 @@ export default class InputHandler {
     this.shipOver = false;
     scene.alreadyFired = false;
     this.movedShipIsColliding = false;
+    //this.CVIsAboutToFire = false;
 
     scene.input.on("pointerdown", (pointer, gameObject) => {
       //controllo che il target del click non sia undefined
       //che non sia la zona del nostro campo
       //che non sia una nave avversaria
-      console.log(gameObject);
+      //console.log(gameObject);
       if (gameObject[0] !== undefined) {
         if (gameObject[0].type != "Sprite") {
           return;
@@ -45,44 +46,69 @@ export default class InputHandler {
         //di default la battleship
         //TODO: se rimane solo il sottomarino, non puoi più sparare, puoi usare solo la sua abilità
         let naveAmmiraglia;
-        if (scene.subAbilityActive) {
-          console.log("subAbilityActive");
-          naveAmmiraglia = [
-            scene.player.player.flotta.submarine.bodyReference.x,
-            scene.player.player.flotta.submarine.bodyReference.y,
-          ];
+        if (
+          scene.subAbilityActive ||
+          scene.cruiserAbilityActive > 0 ||
+          scene.cantFocusAbiliyActive ||
+          scene.carrierAbilityActive
+        ) {
+          console.log(this.focus);
+          naveAmmiraglia = [this.focus.x, this.focus.y];
         } else {
           Object.entries(scene.player.player.flotta)
             .reverse()
             .map((ship) => {
-              console.log(ship[1]);
+              //console.log(ship[1]);
               if (ship[1].hp > 0) {
                 naveAmmiraglia = [
                   ship[1].bodyReference.x,
                   ship[1].bodyReference.y,
+                  ship[1],
                 ];
               }
             });
+          /*if (ship[1].type == "AircraftCarrier") {
+              this.CVIsAboutToFire = true;
+            }*/
         }
 
-        //chiamo la funzione di sparo nella classe che gestisce i proiettili
-        scene.BulletHandler.fireBullet(
-          //gli passo la posizione della nave ammiraglia
-          naveAmmiraglia[0],
-          naveAmmiraglia[1],
-          //l'angolo (in radianti) tra la nave ammiraglia e il punto cliccato
-          Math.Angle.Between(
+        if (
+          (naveAmmiraglia[2] && naveAmmiraglia[2].type == "AircraftCarrier") ||
+          scene.carrierAbilityActive
+        ) {
+          scene.AirplaneHandler.spawnAirplane(
+            gameObject[0],
+            Math.Angle.Between(
+              naveAmmiraglia[0],
+              naveAmmiraglia[1],
+              pointer.x,
+              pointer.y
+            ),
             naveAmmiraglia[0],
             naveAmmiraglia[1],
-            pointer.x,
-            pointer.y
-          ),
-          //la nave a cui sto sparando
-          gameObject[0],
-          //danno che fa il proiettile #TODO: l'abilità che cambia il danno del proiettile è quella del som
-          scene.subAbilityActive ? 1000 : 1,
-          scene.subAbilityActive ? "torpedo" : "bullet"
-        );
+            scene.carrierAbilityActive
+          );
+          //this.CVIsAboutToFire = false;
+        } else {
+          //chiamo la funzione di sparo nella classe che gestisce i proiettili
+          scene.BulletHandler.fireBullet(
+            //gli passo la posizione della nave ammiraglia
+            naveAmmiraglia[0],
+            naveAmmiraglia[1],
+            //l'angolo (in radianti) tra la nave ammiraglia e il punto cliccato
+            Math.Angle.Between(
+              naveAmmiraglia[0],
+              naveAmmiraglia[1],
+              pointer.x,
+              pointer.y
+            ),
+            //la nave a cui sto sparando
+            gameObject[0],
+            //danno che fa il proiettile #TODO: l'abilità che cambia il danno del proiettile è quella del som
+            scene.subAbilityActive ? 1000 : 1,
+            scene.subAbilityActive ? "torpedo" : "bullet"
+          );
+        }
       }
     });
 
@@ -110,23 +136,31 @@ export default class InputHandler {
     scene.input.on("pointerdown", (pointer, gameObject) => {
       //console.log(gameObject[0]);
       //tengo il focus solo se ciò che ho cliccato è la mia nave
-      if (
-        gameObject[0] !== undefined &&
-        !this.shipInMovement &&
-        scene.isMyTurn &&
-        gameObject[0].data.hp > 0
-      ) {
-        if (gameObject[0].type === "Sprite" && gameObject[0].data.ourShip) {
-          //tolgo il focus dall'icon
-          Object.entries(scene.icon).map((icon) => {
-            if (icon[1]) {
-              console.log(icon);
-              icon[1].clearTint();
-            }
-          });
-          scene.UIHandler.abilitySelected = null;
-          this.focus = gameObject[0];
-          scene.UIHandler.showConsumables(this.focus.data.ability, this.focus);
+
+      if (gameObject[0] != undefined && !this.shipInMovement) {
+        if (
+          gameObject[0].type === "Sprite" &&
+          gameObject[0].data.ourShip &&
+          gameObject[0].data.hp > 0 &&
+          !scene.subAbilityActive &&
+          !scene.cantFocusAbiliyActive &&
+          scene.cruiserAbilityActive === 0
+        ) {
+          if (scene.isMyTurn) {
+            //tolgo il focus dall'icon
+            Object.entries(scene.icon).map((icon) => {
+              if (icon[1]) {
+                console.log(icon);
+                icon[1].clearTint();
+              }
+            });
+            scene.UIHandler.abilitySelected = null;
+            this.focus = gameObject[0];
+            scene.UIHandler.showConsumables(
+              this.focus.data.ability,
+              this.focus
+            );
+          } else this.focus = gameObject[0];
         }
       }
     });

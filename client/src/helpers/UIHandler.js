@@ -39,7 +39,13 @@ export default class UIHandler {
         .setVisible(false);
 
       scene.icon.movementIcon.on("pointerdown", () => {
-        if (scene.isMyTurn && !scene.alreadyFired && !scene.subAbilityActive) {
+        if (
+          scene.isMyTurn &&
+          !scene.alreadyFired &&
+          !scene.subAbilityActive &&
+          scene.cruiserAbilityActive === 0 &&
+          !scene.cantFocusAbiliyActive
+        ) {
           if (this.abilitySelected == "movement") {
             scene.icon.movementIcon.clearTint();
             this.abilitySelected = null;
@@ -55,12 +61,21 @@ export default class UIHandler {
           scene.isMyTurn &&
           !scene.alreadyFired &&
           !scene.InputHandler.shipInMovement &&
-          scene.InputHandler.focus.data.abilityCount == 0
+          scene.InputHandler.focus.data.abilityCount == 0 &&
+          !scene.cantFocusAbiliyActive &&
+          this.abilitySelected != "movement"
         ) {
+          console.log("abilità");
           let shipAbility = scene.icon.abilityIcon.texture.key;
           if (this.abilitySelected == shipAbility) {
             scene.icon.abilityIcon.clearTint();
             this.abilitySelected = null;
+
+            //se sto ricliccando vuol dire che di sicuro, anche se sto cliccando un'altra abilità,
+            //quella del sottomarino non sarà attiva
+            //NB: idem per tutte le altre abilità
+            scene.subAbilityActive = false;
+            scene.cruiserAbilityActive = 0;
           } else {
             switch (shipAbility) {
               case "battleshipAbility":
@@ -72,6 +87,12 @@ export default class UIHandler {
                 break;
               case "destroyerAbility":
                 scene.InputHandler.focus.data.destroyerAbility();
+                break;
+              case "cruiserAbility":
+                scene.InputHandler.focus.data.cruiserAbility();
+                break;
+              case "carrierAbility":
+                scene.InputHandler.focus.data.carrierAbility();
                 break;
             }
             scene.icon.abilityIcon.setTint(0x63b159);

@@ -4,7 +4,7 @@ export default class BulletHandler extends Phaser.Physics.Arcade.Group {
   constructor(scene) {
     super(scene.physics.world, scene);
     this.scene = scene;
-    this.bulletVelocity = 300;
+    this.bulletVelocity = 500;
     this.reloadBullet();
   }
 

@@ -128,6 +128,14 @@ io.on("connection", function (socket) {
     socket.broadcast.emit("bulletDestruction", bulletId);
   });
 
+  socket.on("airplaneOnFlight", (x, y, angle, airplaneId) => {
+    socket.broadcast.emit("airplaneOnFlight", x, y, angle, airplaneId);
+  });
+
+  socket.on("bombDropped", (x, y, angle) => {
+    socket.broadcast.emit("bombDropped", x, y, angle);
+  });
+
   //navi colpite
   socket.on("shipHit", (danno, shipId) => {
     socket.broadcast.emit("shipHit", danno, shipId);

@@ -38,7 +38,10 @@ export default class Ship {
           self.scene.InputHandler.movedShipIsColliding = true;
         }
       );
-    } else this.bodyReference.alpha = 0.00000001;
+    } else {
+      this.bodyReference.alpha = 0.00000001;
+      scene.enemyShipGroup.add(this.bodyReference);
+    }
 
     this.bodyReference.data = this;
     //console.log(this.bodyReference.body);

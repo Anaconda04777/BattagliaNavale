@@ -6,6 +6,9 @@ export default class SocketHandler {
     //console.log(scene.socket);
 
     scene.enemyBullet = {};
+    scene.enemyPlane = {};
+
+    this.animationPlayer = scene.AnimationHandler;
 
     //quando mi connetto al server assgno al player un id
     scene.socket.on("connect", () => {
@@ -151,6 +154,36 @@ export default class SocketHandler {
 
       //aggiungo l'id proiettile alla lista dei proiettili (id chiave, oggetto valore)
       scene.enemyBullet[bulletId] = bullet;
+    });
+
+    scene.socket.on("airplaneOnFlight", (x, y, angle, airplaneId) => {
+      //starting x and y
+      //console.log("airplaneOnFlight: " + x + ", " + y + ", " + angle);
+      //creo l'aereo sparato dall'avversario
+      let airplane = scene.physics.add.sprite(
+        scene.scale.width - x,
+        y,
+        "airplane"
+      );
+      //imposto la rotazione dell'aereo (l'angolo è dato in radianti)
+      //essendo nemico devo invertire l'angolo
+      airplane.setAngle(-Phaser.Math.RadToDeg(angle));
+      airplane.setScale(0.3, 0.3);
+      //lo flippo per farlo puntare nella direzione giusta
+      airplane.flipX = true;
+
+      //setto la velocità dell'aereo (con angolo e velocita invertiti)
+      scene.physics.velocityFromRotation(
+        -angle,
+        -scene.AirplaneHandler.planeVelocity,
+        airplane.body.velocity
+      );
+
+      scene.enemyPlane[airplaneId] = airplane;
+    });
+
+    scene.socket.on("bombDropped", (x, y, angle) => {
+      this.animationPlayer.dropBomb(scene.scale.width - x, y, -angle);
     });
 
     //intercetto il messaggio inviato dal server che mi indica che il proiettile ha colpito qualcosa

@@ -8,6 +8,5 @@ export default class Submarine extends Ship {
   submarineAbility() {
     this.scene.subAbilityActive = true;
     console.log("Submarine ability used: ", this);
-    this.abilityCount = this.abilityCooldown;
   }
 }

@@ -4,6 +4,8 @@ import InputHandler from "../helpers/InputHandler.js";
 import SocketHandler from "../helpers/SocketHandler.js";
 import GameHandler from "../helpers/GameHandler.js";
 import BulletHandler from "../helpers/BulletHandler.js";
+import AirplaneHandler from "../helpers/AirplaneHandler.js";
+import AnimationHandler from "../helpers/AnimationHandler.js";
 
 import Submarine from "../helpers/Ships/Submarine.js";
 import Battleship from "../helpers/Ships/Battleships.js";
@@ -19,9 +21,15 @@ export default class Game extends Phaser.Scene {
     this.gameStarted = false;
     //per abilità destroyer
     this.choosenShip = [];
+    //per abilità cruiser
+    this.cruiserAbilityActive = 0;
+    //per abilità cv
+    this.carrierAbilityActive = false;
+    this.shipSpottedWithAircraft = [];
   }
 
   preload() {
+    //l'import non è casesensitive
     this.load.image("Battleship", "src/assets/Battleship.png");
     this.load.image("Cruiser", "src/assets/Cruiser.png");
     this.load.image("Destroyer", "src/assets/Destroyer.png");
@@ -30,6 +38,8 @@ export default class Game extends Phaser.Scene {
 
     this.load.image("bullet", "src/assets/bullet.png");
     this.load.image("torpedo", "src/assets/torpedo.png");
+    this.load.image("airplane", "src/assets/airplane.png");
+    this.load.image("bomb", "src/assets/bomb.png");
 
     this.load.image("movementIcon", "src/assets/movementIcon.png");
     this.load.image("battleshipAbility", "src/assets/battleshipAbility.png");
@@ -41,6 +51,8 @@ export default class Game extends Phaser.Scene {
 
   create() {
     this.shipGroup = this.add.group();
+    this.enemyShipGroup = this.add.group();
+
     this.icon = {
       movementIcon: null,
       abiltyIcon: null,
@@ -88,6 +100,7 @@ export default class Game extends Phaser.Scene {
       item[1].bodyReference.flipX = true;
     });
 
+    this.AnimationHandler = new AnimationHandler(this);
     this.UIHandler = new UIHandler(this);
     this.UIHandler.buildUI();
     this.LogicHandler = new LogicHandler(this);
@@ -95,6 +108,7 @@ export default class Game extends Phaser.Scene {
     this.SocketHandler = new SocketHandler(this);
     this.GameHandler = new GameHandler(this);
     this.BulletHandler = new BulletHandler(this);
+    this.AirplaneHandler = new AirplaneHandler(this);
   }
 
   update() {

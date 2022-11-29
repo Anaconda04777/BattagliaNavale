@@ -11,21 +11,11 @@ export default class Destroyer extends Ship {
       choosenShip = this.getRandomProperty(
         this.scene.player.opponent.flottaNemica
       );
-      choosenShip.bodyReference.alpha = 1;
+      //choosenShip.bodyReference.alpha = 1;
       //console.log(this.scene.choosenShip);
       this.scene.choosenShip.push(choosenShip);
-      /*this.scene.tweens.add({
-        targets: choosenShip.bodyReference,
-        alpha: 0,
-        duration: 1000,
-        ease: "Power1",
-        yoyo: true,
-        repeat: 0,
-        onComplete: () => {
-          choosenShip.bodyReference.alpha = 1;
-          choosenShip.bodyReference.depth = 0;
-        },
-      });*/
+
+      this.scene.AnimationHandler.showShip(choosenShip.bodyReference);
     }
     console.log("Destroyer ability used: ", this.scene.choosenShip);
     this.abilityCount = this.abilityCooldown;
@@ -38,7 +28,7 @@ export default class Destroyer extends Ship {
     const keys = Object.keys(obj);
 
     let rndShip = keys[Math.floor(Math.random() * keys.length)];
-    if (obj[rndShip].hp > 0) {
+    if (obj[rndShip].hp > 0 && obj[rndShip] != this.scene.choosenShip[0 && 1]) {
       return obj[rndShip];
     } else {
       return this.getRandomProperty(obj);

@@ -94,6 +94,12 @@ export default class Bullet extends Phaser.Physics.Arcade.Sprite {
   destructionSignal(bullet) {
     //console.log("bulletDestruction: ", bullet);
     bullet.scene.socket.emit("bulletDestruction", bullet.id);
+    if (bullet.scene.cruiserAbilityActive > 0) {
+      bullet.scene.cruiserAbilityActive--;
+      this.scene.cantFocusAbiliyActive = true;
+      this.scene.alreadyFired = false;
+      return;
+    }
     bullet.scene.socket.emit("changeTurn");
     bullet.scene.GameHandler.changeTurn();
   }
