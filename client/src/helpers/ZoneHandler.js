@@ -2,9 +2,12 @@ export default class ZoneHandler {
   constructor(scene) {
     this.renderZone = (x, y) => {
       //zona di spawn delle carte
-      let dropZone = scene.add
-        .zone(x, y, scene.scale.width / 2, scene.scale.height - 150)
-        .setRectangleDropZone(scene.scale.width / 2, scene.scale.height - 150)
+      let dropZone = scene.add //- 60           //- 150
+        .zone(x, y, scene.scale.width / 2, scene.scale.height - 120)
+        .setRectangleDropZone(
+          scene.scale.width / 2, //- 40,
+          scene.scale.height - 120 //150
+        )
         .setDepth(-1);
       //tengo monitorate le carte che vengono droppate, mi serve per spostare le carte sulla board
       //quando vengono giocate

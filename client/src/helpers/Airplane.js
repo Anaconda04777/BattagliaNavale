@@ -6,7 +6,7 @@ export default class Airplane extends Phaser.Physics.Arcade.Sprite {
     this.scene = scene;
   }
 
-  onFlight(target, angle, x, y, itsSpottingAircraft) {
+  onFlight(target, angle, x, y) {
     //console.log(this.scene.carrierAbilityActive);
     this.itsSpottingAircraft = this.scene.carrierAbilityActive;
     //resetto la posizione del proiettile, nel caso andasse furi dal canvas
@@ -38,17 +38,16 @@ export default class Airplane extends Phaser.Physics.Arcade.Sprite {
           target,
           //callback che viene chiamata quando il proiettile collide con la nave
           function (plane, collider) {
-            console.log(collider);
-
-            plane.dropBombCoordinate(plane, angle);
+            //console.log(collider);
             try {
               if (this.bombAlreadyDropped) return;
-              collider.data.shipHit(1);
+              plane.explodePromise(collider);
               this.bombAlreadyDropped = true;
-              plane.targetReached(plane);
+              //plane.targetReached(plane);
             } catch (e) {
               console.log(e);
             }
+            plane.dropBombCoordinate(plane, angle);
           }
         );
         //fondamentale. Evita la collisione con l'oggetto
@@ -58,24 +57,25 @@ export default class Airplane extends Phaser.Physics.Arcade.Sprite {
           this.scene.collider,
           //callback che viene chiamata quando il proiettile collide con il collider (acqua)
           function (plane, collider) {
-            plane.dropBombCoordinate(plane, angle);
             //console.log(bullet);
-            //chiamo la funzione che dice al server che il proiettile è stato distrutto
             if (this.bombAlreadyDropped) return;
             this.bombAlreadyDropped = true;
-            plane.targetReached(plane);
-            collider.destroy();
+            plane.dropBombCoordinate(plane, angle);
+            //plane.targetReached(plane);
           }
         );
       }
     } else {
       console.log(this.width, this.height);
-      this.body.setSize(200, 200);
+      this.body.setSize(500, 500);
 
       this.collider = this.scene.physics.add.collider(
         this,
         this.scene.enemyShipGroup,
         function (plane, collider) {
+          //console.log(collider);
+          //impedisco che il sottomarino venga spottato dall'aereo
+          if (collider.data.type === "Som") return;
           plane.animationPlayer.showShip(collider);
           plane.scene.shipSpottedWithAircraft.push(collider);
           //console.log(plane.scene.shipSpottedWithAircraft);
@@ -86,37 +86,20 @@ export default class Airplane extends Phaser.Physics.Arcade.Sprite {
     this.collider.overlapOnly = true;
 
     this.scene.socket.emit("airplaneOnFlight", x, y, angle, this.id);
-
-    this.dropBombCoordinate = (plane, angle) => {
-      let randomBomb = [
-        plane.x + Phaser.Math.Between(-5, 5),
-        plane.y + Phaser.Math.Between(-5, 5),
-      ];
-      plane.animationPlayer.dropBomb(randomBomb[0], randomBomb[1], angle);
-      plane.scene.socket.emit(
-        "bombDropped",
-        randomBomb[0],
-        randomBomb[1],
-        angle
-      );
-    };
   }
 
   preUpdate(time, delta) {
     //controllo costantemente se il proiettile è fuori dal canvas
     super.preUpdate(time, delta);
+
     if (
       this.x < 0 ||
       this.x > this.scene.game.config.width ||
       this.y < 0 ||
       this.y > this.scene.game.config.height
     ) {
-      if (this.itsSpottingAircraft) this.targetReached(this);
-      //lo riciclo
-      this.setActive(false);
-      this.setVisible(false);
-      //resetto il size della shapeCollision
-      this.body.setSize(40, 54);
+      this.targetReached(this);
+      //this.destroy();
     }
   }
 
@@ -128,7 +111,22 @@ export default class Airplane extends Phaser.Physics.Arcade.Sprite {
       this.scene.alreadyFired = false;
       return;
     }
+
     plane.scene.socket.emit("changeTurn");
     plane.scene.GameHandler.changeTurn();
+    plane.destroy();
+  }
+
+  async dropBombCoordinate(plane, angle) {
+    console.log("dropBombCoordinate");
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    plane.animationPlayer.dropBomb(plane.x, plane.y, angle - Math.PI / 2);
+    plane.scene.socket.emit("bombDropped", plane.x, plane.y, angle);
+  }
+
+  async explodePromise(collider) {
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    collider.data.shipHit(1);
   }
 }

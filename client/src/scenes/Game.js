@@ -113,5 +113,8 @@ export default class Game extends Phaser.Scene {
 
   update() {
     //this.InputHandler.setShipOverFalse();
+    //console.log(this.enemyBullet);
+    this.LogicHandler.checkVisibilitiOfBullet(this.enemyBullet);
+    this.LogicHandler.checkVisibilitiOfBullet(this.enemyPlane);
   }
 }

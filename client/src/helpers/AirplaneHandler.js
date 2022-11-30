@@ -8,11 +8,15 @@ export default class AirplaneHandler extends Phaser.Physics.Arcade.Group {
     this.scene = scene;
   }
 
-  spawnAirplane(target, angle, x, y, itsSpottingAircraft) {
+  spawnAirplane(target, angle, x, y) {
+    //se il gruppo di volo è vuoto ricarico il gruppo
+    if (this.children.size === 0) this.reoloadAirplane();
+
+    //prende il primo elemento del gruppo con active false
     const plane = this.getFirstDead(false);
 
     if (plane) {
-      plane.onFlight(target, angle, x, y, itsSpottingAircraft);
+      plane.onFlight(target, angle, x, y);
     }
 
     //console.log(this);

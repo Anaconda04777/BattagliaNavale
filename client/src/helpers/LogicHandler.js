@@ -14,7 +14,7 @@ export default class LogicHandler {
     );
 
     //bordo della zona (TODO: togliere))
-    this.myZone.renderOutline(scene.myZone);
+    //this.myZone.renderOutline(scene.myZone);
 
     //collider che distruggerà il proiettile quando finirà in acqua
     this.missCollider = (x, y) => {
@@ -61,6 +61,17 @@ export default class LogicHandler {
         this.y < 0 ||
         this.y > this.scene.game.config.height
       )*/
+    };
+
+    //controllo che il proiettile (o l'aereo) non siano visibili nel campo nemico (quando lui spara)
+    this.checkVisibilitiOfBullet = (object) => {
+      if (Object.keys(object).length > 0) {
+        Object.values(object).map((item) => {
+          if (item.x > scene.scale.width / 2) {
+            item.visible = false;
+          } else item.visible = true;
+        });
+      }
     };
 
     this.generateId = () => {

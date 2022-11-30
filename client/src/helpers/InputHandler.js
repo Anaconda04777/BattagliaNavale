@@ -7,13 +7,12 @@ export default class InputHandler {
     this.shipOver = false;
     scene.alreadyFired = false;
     this.movedShipIsColliding = false;
-    //this.CVIsAboutToFire = false;
 
     scene.input.on("pointerdown", (pointer, gameObject) => {
       //controllo che il target del click non sia undefined
       //che non sia la zona del nostro campo
       //che non sia una nave avversaria
-      //console.log(gameObject);
+      console.log(gameObject);
       if (gameObject[0] !== undefined) {
         if (gameObject[0].type != "Sprite") {
           return;
@@ -88,7 +87,6 @@ export default class InputHandler {
             naveAmmiraglia[1],
             scene.carrierAbilityActive
           );
-          //this.CVIsAboutToFire = false;
         } else {
           //chiamo la funzione di sparo nella classe che gestisce i proiettili
           scene.BulletHandler.fireBullet(
@@ -144,7 +142,8 @@ export default class InputHandler {
           gameObject[0].data.hp > 0 &&
           !scene.subAbilityActive &&
           !scene.cantFocusAbiliyActive &&
-          scene.cruiserAbilityActive === 0
+          scene.cruiserAbilityActive === 0 &&
+          !scene.carrierAbilityActive
         ) {
           if (scene.isMyTurn) {
             //tolgo il focus dall'icon
@@ -234,7 +233,16 @@ export default class InputHandler {
     //quando rilascio il click
     scene.input.on("dragend", (pointer, gameObject, dropped) => {
       //se la nave è stata droppata su un'altra nave oppure fuori dal nostro campo
-      if (!dropped || this.shipOver) {
+      if (
+        !dropped ||
+        this.shipOver ||
+        //impedisco che la nave vada oltre il la metà campo
+        //NB: il +10 è perché la x si riferisce alla metà nave, CAMBIARE con le texture nuove
+        this.focus.x > scene.scale.width / 2 - 10 ||
+        this.focus.x < 15 ||
+        this.focus.y > scene.scale.height - 88 ||
+        this.focus.y < 60
+      ) {
         //la posizione della nave viene resettata alla posizione iniziale
         gameObject.x = gameObject.input.dragStartX;
         gameObject.y = gameObject.input.dragStartY;

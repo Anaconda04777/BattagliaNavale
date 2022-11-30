@@ -11,6 +11,7 @@ export default class Ship {
 
     this.abilityCooldown = abilityCooldown;
     this.abilityCount = this.abilityCooldown;
+    this.abilityUsed = false;
 
     this.id = null;
     //console.log(this.id);
@@ -78,6 +79,7 @@ export default class Ship {
       this.bodyReference.setActive(false);
       this.bodyReference.alpha = 0.3;
       this.bodyReference.setInteractive(false);
+
       console.log("ship destroyed");
     }
   }

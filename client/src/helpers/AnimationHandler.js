@@ -3,12 +3,14 @@ export default class AnimationHandler {
     this.scene = scene;
   }
 
-  showShip(ship) {
-    //e fare il tween opposto
+  showShip(ship, time = 1000) {
+    //animazione di scopertura delle navi
+    //console.log(ship);
+    if (ship.data.hp <= 0) return;
     let tween = this.scene.tweens.add({
       targets: ship,
       alpha: 1,
-      duration: 1000,
+      duration: time,
       ease: "Power1",
       onComplete: () => {
         tween.remove();
@@ -16,12 +18,14 @@ export default class AnimationHandler {
     });
   }
 
-  hideShip(ship) {
-    //e fare il tween opposto
+  hideShip(ship, time = 1000) {
+    //animazione di copertura delle navi
+    //console.log(ship);
+    if (ship.data.hp <= 0) return;
     let tween = this.scene.tweens.add({
       targets: ship,
       alpha: 0.00000001,
-      duration: 1000,
+      duration: time,
       ease: "Power1",
       onComplete: () => {
         tween.remove();
@@ -31,8 +35,8 @@ export default class AnimationHandler {
 
   dropBomb(x, y, angle) {
     let bomb = this.scene.add.sprite(x, y, "bomb");
-    bomb.setScale(0.2, 0.2);
-    bomb.setAngle(Phaser.Math.RadToDeg(angle) - 90);
+    bomb.setScale(0.35, 0.35);
+    bomb.setAngle(Phaser.Math.RadToDeg(angle));
 
     //console.log(bomb);
 

@@ -13,9 +13,9 @@ export default class UIHandler {
           0.6
         )
         .setInteractive();
-      scene.fillBox = scene.add
+      /*scene.fillBox = scene.add
         .rectangle(256, scene.scale.height - 80, 512, 20, 0x000000, 0)
-        .setInteractive();
+        .setInteractive();*/
 
       //console.log(scene.scale.width);
     };
@@ -24,18 +24,20 @@ export default class UIHandler {
       scene.icon.movementIcon = scene.add
         .image(
           scene.scale.width / 4 - 35,
-          scene.scale.height - 36.5,
+          scene.scale.height - 30,
           "movementIcon"
         )
         .setInteractive()
+        .setScale(0.9, 0.9)
         .setVisible(false);
       scene.icon.abilityIcon = scene.add
         .image(
           scene.scale.width / 4 + 35,
-          scene.scale.height - 36.5,
+          scene.scale.height - 30,
           "battleshipAbility"
         )
         .setInteractive()
+        .setScale(0.9, 0.9)
         .setVisible(false);
 
       scene.icon.movementIcon.on("pointerdown", () => {
@@ -44,7 +46,8 @@ export default class UIHandler {
           !scene.alreadyFired &&
           !scene.subAbilityActive &&
           scene.cruiserAbilityActive === 0 &&
-          !scene.cantFocusAbiliyActive
+          !scene.cantFocusAbiliyActive &&
+          !scene.carrierAbilityActive
         ) {
           if (this.abilitySelected == "movement") {
             scene.icon.movementIcon.clearTint();
@@ -76,10 +79,10 @@ export default class UIHandler {
             //NB: idem per tutte le altre abilità
             scene.subAbilityActive = false;
             scene.cruiserAbilityActive = 0;
+            scene.carrierAbilityActive = false;
           } else {
             switch (shipAbility) {
               case "battleshipAbility":
-                console.log(scene.InputHandler.focus);
                 scene.InputHandler.focus.data.battleshipAbility();
                 break;
               case "subAbility":
@@ -102,6 +105,18 @@ export default class UIHandler {
       });
     };
 
+    this.buildNavyInformation = () => {
+      scene.navyInformation = scene.add
+        .text(
+          scene.scale.width / 4 - 35,
+          scene.scale.height - 70,
+          "Navy Information"
+        )
+        .setFontSize(10)
+        .setFont("Arial");
+      console.log(scene.navyInformation);
+    };
+
     this.showConsumables = (abilitySelected, focus) => {
       if (scene.gameStarted) {
         let icon = scene.icon.abilityIcon;
@@ -117,10 +132,34 @@ export default class UIHandler {
       scene.header = scene.add
         .rectangle(0, 0, scene.scale.width * 2, 100, 0x000000, 0.6)
         .setInteractive();
-      scene.fillBox = scene.add
+      /*scene.fillBox = scene.add
         .rectangle(256, 55, 512, 20, 0x000000, 0)
-        .setInteractive();
+        .setInteractive();*/
       scene.header.depth = -1;
+    };
+
+    this.buildSideLineFillBox = () => {
+      scene.sideLine1 = scene.add
+        .rectangle(
+          0,
+          scene.scale.height / 2 - 12,
+          50,
+          scene.scale.height - 122,
+          0x000000,
+          0.6
+        )
+        .setInteractive();
+
+      scene.sideLine2 = scene.add
+        .rectangle(
+          scene.scale.width / 2 - 12,
+          scene.scale.height / 2 - 12,
+          25,
+          scene.scale.height - 122,
+          0x000000,
+          0.6
+        )
+        .setInteractive();
     };
 
     //linea di divisione campi
@@ -196,6 +235,8 @@ export default class UIHandler {
       this.enemyready();
       this.readyButton();
       this.buildHeader();
+      this.buildNavyInformation();
+      //this.buildSideLineFillBox();
 
       scene.readyButton.on("pointerover", function () {
         scene.readyButton.setColor("#ff0000");

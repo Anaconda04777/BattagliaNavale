@@ -2,7 +2,7 @@ import Ship from "./Ship";
 
 export default class Destroyer extends Ship {
   constructor(scene, x, y, ourShip) {
-    super(scene, "Destroyer", 1, x, y, ourShip, 50, "destroyerAbility", 1);
+    super(scene, "Destroyer", 2, x, y, ourShip, 70, "destroyerAbility", 5);
   }
 
   destroyerAbility() {
@@ -25,13 +25,20 @@ export default class Destroyer extends Ship {
   }
 
   getRandomProperty(obj) {
-    const keys = Object.keys(obj);
+    try {
+      const keys = Object.keys(obj);
 
-    let rndShip = keys[Math.floor(Math.random() * keys.length)];
-    if (obj[rndShip].hp > 0 && obj[rndShip] != this.scene.choosenShip[0 && 1]) {
-      return obj[rndShip];
-    } else {
-      return this.getRandomProperty(obj);
+      let rndShip = keys[Math.floor(Math.random() * keys.length)];
+      if (
+        obj[rndShip].hp > 0 &&
+        obj[rndShip] != this.scene.choosenShip[0 && 1]
+      ) {
+        return obj[rndShip];
+      } else {
+        return this.getRandomProperty(obj);
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 }

@@ -103,6 +103,9 @@ export default class SocketHandler {
         scene.player.opponent.flottaNemica
       );
 
+      //quando il nemico muove una nave, la
+      if (scene.gameStarted)
+        this.animationPlayer.hideShip(movingShip.bodyReference, 100);
       //assegno le coordinate alla nave trovata
       movingShip.bodyReference.x = scene.scale.width - x;
       movingShip.bodyReference.y = y;
@@ -152,6 +155,8 @@ export default class SocketHandler {
         bullet.body.velocity
       );
 
+      console.log(scene.myZone);
+
       //aggiungo l'id proiettile alla lista dei proiettili (id chiave, oggetto valore)
       scene.enemyBullet[bulletId] = bullet;
     });
@@ -183,7 +188,11 @@ export default class SocketHandler {
     });
 
     scene.socket.on("bombDropped", (x, y, angle) => {
-      this.animationPlayer.dropBomb(scene.scale.width - x, y, -angle);
+      this.animationPlayer.dropBomb(
+        scene.scale.width - x,
+        y,
+        angle + Math.PI / 2 // + Math.PI / 3
+      );
     });
 
     //intercetto il messaggio inviato dal server che mi indica che il proiettile ha colpito qualcosa

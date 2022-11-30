@@ -12,8 +12,10 @@ export default class GameHandler {
       scene.UIHandler.abilitySelected = null;
       scene.cantFocusAbiliyActive = false;
       scene.carrierAbilityActive = false;
+      scene.subAbilityActive = false;
+
+      if (!scene.isMyTurn) this.checkAbilityUsed();
       this.removeTintFromIcons();
-      this.checkSubAbility();
       if (scene.isMyTurn) {
         this.decrementCooldown();
         this.checkAirCraftAbility();
@@ -41,14 +43,6 @@ export default class GameHandler {
       });
     };
 
-    this.checkSubAbility = () => {
-      if (scene.subAbilityActive) {
-        scene.player.player.flotta.submarine.abilityCount =
-          scene.player.player.flotta.submarine.abilityCooldown;
-        scene.subAbilityActive = false;
-      }
-    };
-
     this.checkDestroyerAbility = () => {
       //console.log(scene.choosenShip);
       if (scene.choosenShip.length >= 2) {
@@ -68,9 +62,16 @@ export default class GameHandler {
         });
         scene.shipSpottedWithAircraft = [];
       }
-      /*scene.player.player.flotta.aircraft.abilityCount =
-          scene.player.player.flotta.aircraft.abilityCooldown;
-        scene.aircraftAbilityActive = false;*/
+    };
+
+    this.checkAbilityUsed = () => {
+      Object.entries(scene.player.player.flotta).map((ship) => {
+        //console.log(ship[1]);
+        if (ship[1].abilityUsed) {
+          ship[1].abilityCount = ship[1].abilityCooldown;
+          ship[1].abilityUsed = false;
+        }
+      });
     };
   }
 }
