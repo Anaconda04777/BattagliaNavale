@@ -1,6 +1,9 @@
+import Phaser, { Scene } from "phaser";
+
 export default class UIHandler {
   constructor(scene) {
     this.abilitySelected = null;
+    this.informationBuilt = false;
     //rettangolo per i consumabili
     this.buildConsumalesBox = () => {
       scene.consumablesBox = scene.add
@@ -23,21 +26,19 @@ export default class UIHandler {
     this.buildConsumablesIcon = () => {
       scene.icon.movementIcon = scene.add
         .image(
-          scene.scale.width / 4 - 35,
-          scene.scale.height - 30,
+          scene.scale.width / 4 - 30,
+          scene.scale.height - 36.5,
           "movementIcon"
         )
         .setInteractive()
-        .setScale(0.9, 0.9)
         .setVisible(false);
       scene.icon.abilityIcon = scene.add
         .image(
-          scene.scale.width / 4 + 35,
-          scene.scale.height - 30,
+          scene.scale.width / 4 + 30,
+          scene.scale.height - 36.5,
           "battleshipAbility"
         )
         .setInteractive()
-        .setScale(0.9, 0.9)
         .setVisible(false);
 
       scene.icon.movementIcon.on("pointerdown", () => {
@@ -106,15 +107,79 @@ export default class UIHandler {
     };
 
     this.buildNavyInformation = () => {
-      scene.navyInformation = scene.add
+      this.informationBuilt = true;
+
+      scene.navyInformationTxt = scene.add
         .text(
-          scene.scale.width / 4 - 35,
+          scene.scale.width / 2 - 100,
           scene.scale.height - 70,
-          "Navy Information"
+          "Aircraft Carrier"
         )
-        .setFontSize(10)
-        .setFont("Arial");
-      console.log(scene.navyInformation);
+        .setFontSize(13)
+        .setFontFamily("Arial");
+      console.log(scene.navyInformationTxt);
+
+      scene.navyInformationImage = scene.add.image(
+        scene.scale.width / 2 - 85,
+        scene.scale.height - 40,
+        "Battleship"
+      );
+
+      scene.statsText = scene.add
+        .text(0, 0, "Statistiche")
+        .setFontSize(13)
+        .setFontFamily("Arial");
+
+      scene.hpText = scene.add
+        .text(0, 15, "Hp: 0")
+        .setFontSize(13)
+        .setFontFamily("Arial");
+
+      scene.spottedText = scene.add
+        .text(0, 30, "Spotted: ✔")
+        .setFontSize(13)
+        .setFontFamily("Arial");
+
+      scene.cooldownAbilityText = scene.add
+        .text(0, 45, "Ability Cooldown: 0")
+        .setFontSize(13)
+        .setFontFamily("Arial");
+
+      scene.shipStats = new Phaser.GameObjects.Container(
+        scene,
+        20,
+        scene.scale.height - 70,
+        [
+          scene.statsText,
+          scene.hpText,
+          scene.spottedText,
+          scene.cooldownAbilityText,
+        ]
+      );
+      scene.add.existing(scene.shipStats);
+      console.log(scene.shipStats);
+
+      scene.shipStats.add(scene.hpText);
+
+      scene.shipInformationElemements = [
+        scene.navyInformationTxt,
+        scene.navyInformationImage,
+        scene.shipStats,
+      ];
+    };
+
+    this.updateNavyInformation = (ship) => {
+      scene.hpText.setText("Hp: " + ship.data.hp);
+      console.log(ship);
+      scene.spottedText.setText(`Spotted: ${ship.data.spotted ? "✔" : "✘"}`);
+      scene.cooldownAbilityText.setText(
+        `Ability Cooldown: ${
+          ship.data.abilityCount == 0 ? "ready" : ship.data.abilityCount
+        }`
+      );
+
+      scene.navyInformationTxt.setText(ship.data.shipName);
+      scene.navyInformationImage.setTexture(ship.texture.key);
     };
 
     this.showConsumables = (abilitySelected, focus) => {
@@ -136,30 +201,6 @@ export default class UIHandler {
         .rectangle(256, 55, 512, 20, 0x000000, 0)
         .setInteractive();*/
       scene.header.depth = -1;
-    };
-
-    this.buildSideLineFillBox = () => {
-      scene.sideLine1 = scene.add
-        .rectangle(
-          0,
-          scene.scale.height / 2 - 12,
-          50,
-          scene.scale.height - 122,
-          0x000000,
-          0.6
-        )
-        .setInteractive();
-
-      scene.sideLine2 = scene.add
-        .rectangle(
-          scene.scale.width / 2 - 12,
-          scene.scale.height / 2 - 12,
-          25,
-          scene.scale.height - 122,
-          0x000000,
-          0.6
-        )
-        .setInteractive();
     };
 
     //linea di divisione campi
@@ -235,8 +276,6 @@ export default class UIHandler {
       this.enemyready();
       this.readyButton();
       this.buildHeader();
-      this.buildNavyInformation();
-      //this.buildSideLineFillBox();
 
       scene.readyButton.on("pointerover", function () {
         scene.readyButton.setColor("#ff0000");

@@ -132,6 +132,7 @@ export default class InputHandler {
 
     //stabilisco il focus sulla nave che ho cliccato
     scene.input.on("pointerdown", (pointer, gameObject) => {
+      let uiHandler = scene.UIHandler;
       //console.log(gameObject[0]);
       //tengo il focus solo se ciò che ho cliccato è la mia nave
 
@@ -153,12 +154,11 @@ export default class InputHandler {
                 icon[1].clearTint();
               }
             });
-            scene.UIHandler.abilitySelected = null;
+            uiHandler.abilitySelected = null;
             this.focus = gameObject[0];
-            scene.UIHandler.showConsumables(
-              this.focus.data.ability,
-              this.focus
-            );
+            uiHandler.showConsumables(this.focus.data.ability, this.focus);
+            if (!uiHandler.informationBuilt) uiHandler.buildNavyInformation();
+            uiHandler.updateNavyInformation(this.focus);
           } else this.focus = gameObject[0];
         }
       }

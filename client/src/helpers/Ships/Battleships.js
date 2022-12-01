@@ -1,8 +1,19 @@
 import Ship from "./Ship";
 
 export default class Battleship extends Ship {
-  constructor(scene, x, y, ourShip) {
-    super(scene, "Battleship", 4, x, y, ourShip, 30, "battleshipAbility", 4);
+  constructor(scene, x, y, ourShip, name) {
+    super(
+      scene,
+      "Battleship",
+      4,
+      x,
+      y,
+      ourShip,
+      30,
+      "battleshipAbility",
+      4,
+      name
+    );
   }
 
   battleshipAbility() {

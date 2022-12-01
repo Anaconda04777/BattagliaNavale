@@ -236,6 +236,11 @@ export default class SocketHandler {
       console.log(gameState);
     });
 
+    scene.socket.on("shipSpotted", (id, isSpotted) => {
+      let ship = this.searchShipWithId(id, scene.player.player.flotta);
+      ship.shipSpotted(isSpotted);
+    });
+
     this.searchShipWithId = (shipId, obj) => {
       let searchedShip;
       //ciclo le navi per trovare quella con l'id ricevuto (ovvero quella che si è mossa)

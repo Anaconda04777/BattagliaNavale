@@ -19,6 +19,7 @@ export default class Game extends Phaser.Scene {
     this.numPlayers = 0;
     this.isMyTurn;
     this.gameStarted = false;
+    this.shipInformationElemements = [];
     //per abilità destroyer
     this.choosenShip = [];
     //per abilità cruiser
@@ -47,6 +48,8 @@ export default class Game extends Phaser.Scene {
     this.load.image("destroyerAbility", "src/assets/destroyerAbility.png");
     this.load.image("subAbility", "src/assets/subAbility.png");
     this.load.image("carrierAbility", "src/assets/carrierAbility.png");
+
+    this.load.image("spotSignal", "src/assets/spotSignal.png");
   }
 
   create() {
@@ -63,31 +66,75 @@ export default class Game extends Phaser.Scene {
         id: null,
         isReady: false,
         flotta: {
-          battleship: new Battleship(this, 100, 150, true),
-          aircraftCarrier: new AircraftCarrier(this, 100, 100, true),
-          cruiser: new Cruiser(this, 100, 200, true),
-          cruiser2: new Cruiser(this, 100, 250, true),
-          destroyer: new Destroyer(this, 100, 300, true),
-          destroyer2: new Destroyer(this, 100, 350, true),
-          submarine: new Submarine(this, 100, 400, true),
+          battleship: new Battleship(this, 100, 150, true, "BattleShip"),
+          aircraftCarrier: new AircraftCarrier(
+            this,
+            100,
+            100,
+            true,
+            "Aircraft Carrier"
+          ),
+          cruiser: new Cruiser(this, 100, 200, true, "Cruiser 1"),
+          cruiser2: new Cruiser(this, 100, 250, true, "Cruiser 2"),
+          destroyer: new Destroyer(this, 100, 300, true, "Destroyer 1"),
+          destroyer2: new Destroyer(this, 100, 350, true, "Destroyer 2"),
+          submarine: new Submarine(this, 100, 400, true, "Submarine"),
         },
       },
       opponent: {
         id: null,
         isReady: false,
         flottaNemica: {
-          battleship: new Battleship(this, this.scale.width - 100, 150, false),
+          battleship: new Battleship(
+            this,
+            this.scale.width - 100,
+            150,
+            false,
+            "BattleShip"
+          ),
           aircraftCarrier: new AircraftCarrier(
             this,
             this.scale.width - 100,
-            100
+            100,
+            false,
+            "Aircraft Carrier"
           ),
 
-          cruiser: new Cruiser(this, this.scale.width - 100, 200, false),
-          cruiser2: new Cruiser(this, this.scale.width - 100, 250, false),
-          destroyer: new Destroyer(this, this.scale.width - 100, 300, false),
-          destroyer2: new Destroyer(this, this.scale.width - 100, 350, false),
-          submarine: new Submarine(this, this.scale.width - 100, 400, false),
+          cruiser: new Cruiser(
+            this,
+            this.scale.width - 100,
+            200,
+            false,
+            "Cruiser 1"
+          ),
+          cruiser2: new Cruiser(
+            this,
+            this.scale.width - 100,
+            250,
+            false,
+            "Cruiser 2"
+          ),
+          destroyer: new Destroyer(
+            this,
+            this.scale.width - 100,
+            300,
+            false,
+            "Destroyer 1"
+          ),
+          destroyer2: new Destroyer(
+            this,
+            this.scale.width - 100,
+            350,
+            false,
+            "Destroyer 2"
+          ),
+          submarine: new Submarine(
+            this,
+            this.scale.width - 100,
+            400,
+            false,
+            "Submarine"
+          ),
         },
       },
     };

@@ -16,6 +16,8 @@ export default class AnimationHandler {
         tween.remove();
       },
     });
+
+    this.scene.socket.emit("shipSpotted", ship.data.id, true);
   }
 
   hideShip(ship, time = 1000) {
@@ -31,6 +33,8 @@ export default class AnimationHandler {
         tween.remove();
       },
     });
+
+    this.scene.socket.emit("shipSpotted", ship.data.id, false);
   }
 
   dropBomb(x, y, angle) {
@@ -48,6 +52,30 @@ export default class AnimationHandler {
       ease: "Power1",
       onComplete: function () {
         bomb.destroy();
+      },
+    });
+  }
+
+  showItem(item, time = 1000) {
+    let tween = this.scene.tweens.add({
+      targets: item,
+      alpha: 1,
+      duration: time,
+      ease: "Power1",
+      onComplete: () => {
+        tween.remove();
+      },
+    });
+  }
+
+  hideItem(item, time = 1000) {
+    let tween = this.scene.tweens.add({
+      targets: item,
+      alpha: 0,
+      duration: time,
+      ease: "Power1",
+      onComplete: () => {
+        tween.remove();
       },
     });
   }

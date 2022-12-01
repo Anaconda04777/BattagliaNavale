@@ -20,7 +20,8 @@ export default class GameHandler {
         this.decrementCooldown();
         this.checkAirCraftAbility();
         this.checkDestroyerAbility();
-      }
+        this.showInformation();
+      } else this.hideInformation();
     };
 
     this.removeTintFromIcons = () => {
@@ -31,6 +32,20 @@ export default class GameHandler {
           icon[1].setInteractive(true);
           icon[1].setVisible(false);
         }
+      });
+    };
+
+    this.hideInformation = () => {
+      if (scene.shipInformationElemements === undefined) return;
+      scene.shipInformationElemements.map((element) => {
+        element.setVisible(false);
+      });
+    };
+
+    this.showInformation = () => {
+      if (scene.shipInformationElemements === undefined) return;
+      scene.shipInformationElemements.map((element) => {
+        element.setVisible(true);
       });
     };
 

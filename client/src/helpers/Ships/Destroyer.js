@@ -1,8 +1,19 @@
 import Ship from "./Ship";
 
 export default class Destroyer extends Ship {
-  constructor(scene, x, y, ourShip) {
-    super(scene, "Destroyer", 2, x, y, ourShip, 70, "destroyerAbility", 5);
+  constructor(scene, x, y, ourShip, name) {
+    super(
+      scene,
+      "Destroyer",
+      2,
+      x,
+      y,
+      ourShip,
+      70,
+      "destroyerAbility",
+      5,
+      name
+    );
   }
 
   destroyerAbility() {

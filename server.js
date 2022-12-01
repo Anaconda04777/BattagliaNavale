@@ -148,6 +148,10 @@ io.on("connection", function (socket) {
     socket.broadcast.emit("battleshipAbility", shipId, hp);
   });
 
+  socket.on("shipSpotted", (shipId, isSpotted) => {
+    socket.broadcast.emit("shipSpotted", shipId, isSpotted);
+  });
+
   //-----------------------------------------
 
   socket.on("changeTurn", () => {

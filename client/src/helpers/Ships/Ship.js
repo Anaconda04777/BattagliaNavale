@@ -1,5 +1,16 @@
 export default class Ship {
-  constructor(scene, type, hp, x, y, ourShip, fuel, ability, abilityCooldown) {
+  constructor(
+    scene,
+    type,
+    hp,
+    x,
+    y,
+    ourShip,
+    fuel,
+    ability,
+    abilityCooldown,
+    name
+  ) {
     this.type = type;
     this.hp = hp;
     this.x = x;
@@ -8,12 +19,14 @@ export default class Ship {
     this.ourShip = ourShip;
     this.fuel = fuel;
     this.ability = ability;
+    this.shipName = name;
 
     this.abilityCooldown = abilityCooldown;
     this.abilityCount = this.abilityCooldown;
     this.abilityUsed = false;
 
     this.id = null;
+    this.spotted = false;
     //console.log(this.id);
     this.isColliding = false;
     this.fuelCapacity = this.fuel;
@@ -46,6 +59,11 @@ export default class Ship {
 
     this.bodyReference.data = this;
     //console.log(this.bodyReference.body);
+
+    this.spotSignal = this.scene.add
+      .image(x, y, "spotSignal")
+      .setScale(0.5, 0.5);
+    this.spotSignal.alpha = 0;
   }
 
   generateId() {
@@ -82,6 +100,22 @@ export default class Ship {
 
       console.log("ship destroyed");
     }
+  }
+
+  //funzione che viene chiamata quando la nave viene spottata o diventa nascosta
+  shipSpotted(spotted) {
+    this.spotted = spotted;
+
+    /*this.spotSignal.x = this.dir
+      ? this.bodyReference.x
+      : this.bodyReference.x - 15;
+    this.spotSignal.y = this.dir
+      ? this.bodyReference.y - 15
+      : this.bodyReference.y;*/
+    this.spotSignal.x = this.bodyReference.x;
+    this.spotSignal.y = this.bodyReference.y - 15;
+    if (spotted) this.scene.AnimationHandler.showItem(this.spotSignal, 500);
+    else this.scene.AnimationHandler.hideItem(this.spotSignal, 500);
   }
 
   update() {
