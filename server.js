@@ -158,6 +158,10 @@ io.on("connection", function (socket) {
     socket.broadcast.emit("changeTurn");
   });
 
+  socket.on("gameOver", () => {
+    socket.broadcast.emit("gameOver");
+  });
+
   socket.on("disconnect", function () {
     numPlayers--;
 

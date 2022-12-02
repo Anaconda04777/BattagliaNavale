@@ -98,6 +98,7 @@ export default class Ship {
       this.bodyReference.alpha = 0.3;
       this.bodyReference.setInteractive(false);
 
+      this.scene.LogicHandler.checkEndGame();
       console.log("ship destroyed");
     }
   }

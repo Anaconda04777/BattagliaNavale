@@ -74,6 +74,20 @@ export default class LogicHandler {
       }
     };
 
+    this.checkEndGame = () => {
+      let shipRemaning = 0;
+      Object.values(scene.player.player.flotta).map((item) => {
+        if (item.hp > 0) {
+          shipRemaning++;
+        }
+      });
+      if (shipRemaning === 0) {
+        scene.gameOver = true;
+        scene.UIHandler.endGameWindow("You lost!");
+        scene.socket.emit("gameOver");
+      }
+    };
+
     this.generateId = () => {
       let s4 = () => {
         return Math.floor((1 + Math.random()) * 0x10000)

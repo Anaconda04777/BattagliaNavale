@@ -226,14 +226,13 @@ export default class SocketHandler {
       console.log("battleshipAbility", ship);
     });
 
+    scene.socket.on("gameOver", () => {
+      scene.gameOver = true;
+      scene.UIHandler.endGameWindow("You Won!");
+    });
+
     scene.socket.on("disconnect", () => {
       console.log("Disconnected from server");
-    });
-    scene.socket.on("message", (message) => {
-      console.log(message);
-    });
-    scene.socket.on("gameState", (gameState) => {
-      console.log(gameState);
     });
 
     scene.socket.on("shipSpotted", (id, isSpotted) => {
