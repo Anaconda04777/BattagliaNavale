@@ -99,6 +99,13 @@ export default class Ship {
       this.bodyReference.setInteractive(false);
 
       this.scene.LogicHandler.checkEndGame();
+      this.scene.AnimationHandler.deathAnimation(
+        this.bodyReference.x,
+        this.bodyReference.y,
+        this.bodyReference.width,
+        this.bodyReference.height,
+        this.dir
+      );
       console.log("ship destroyed");
     }
   }
@@ -119,19 +126,6 @@ export default class Ship {
     else this.scene.AnimationHandler.hideItem(this.spotSignal, 500);
   }
 
-  update() {
-    //sposto la shape statica in base alla posizione della sprite
-    //se la nave è in verticale devo invertire i fattori di sottrazione
-    //aggiunta di fattori dovuto a bug della posizione dopo il movimento con gli angoli
-    if (this.dir) {
-      this.bodyReference.body.y = this.bodyReference.y - 10;
-      this.bodyReference.body.x = this.bodyReference.x - 15;
-    } else {
-      this.bodyReference.body.y = this.bodyReference.y - 15;
-      this.bodyReference.body.x = this.bodyReference.x - 10;
-    }
-  }
-
   changeAngle(angle, dir) {
     //quando cambio angolo salvo la direzione della nave
     this.dir = dir;
@@ -145,6 +139,7 @@ export default class Ship {
       dir ? this.bodyReference.height : this.bodyReference.width
     );
 
+    this.update();
     //console.log(this.bodyReference.body);
   }
 

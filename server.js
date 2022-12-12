@@ -42,10 +42,12 @@ const players = [
   {
     id: null,
     ready: false,
+    readyToRestart: false,
   },
   {
     id: null,
     ready: false,
+    readyToRestart: false,
   },
 ];
 let numPlayers = 0;
@@ -154,12 +156,38 @@ io.on("connection", function (socket) {
 
   //-----------------------------------------
 
+  //animation
+  socket.on("hitSplash", (x, y) => {
+    socket.broadcast.emit("hitSplash", x, y);
+  });
+
+  socket.on("waterSplash", (x, y) => {
+    socket.broadcast.emit("waterSplash", x, y);
+  });
+
   socket.on("changeTurn", () => {
     socket.broadcast.emit("changeTurn");
   });
 
   socket.on("gameOver", () => {
     socket.broadcast.emit("gameOver");
+  });
+
+  socket.on("readyToRestart", (id) => {
+    let count = 0;
+    players.map((item) => {
+      if (item.id == id) {
+        item.readyToRestart = true;
+      }
+      if (item.readyToRestart) {
+        count++;
+      }
+    });
+    if (count == 2) {
+      console.log("All players are ready to restart");
+      socket.broadcast.emit("readyToRestart");
+      socket.emit("readyToRestart");
+    }
   });
 
   socket.on("disconnect", function () {

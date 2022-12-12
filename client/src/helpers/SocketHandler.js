@@ -226,9 +226,23 @@ export default class SocketHandler {
       console.log("battleshipAbility", ship);
     });
 
+    //animations
+    scene.socket.on("hitSplash", (x, y) => {
+      this.animationPlayer.hitSplash(scene.scale.width - x, y);
+    });
+
+    scene.socket.on("waterSplash", (x, y) => {
+      this.animationPlayer.waterSplash(scene.scale.width - x, y);
+    });
+
     scene.socket.on("gameOver", () => {
       scene.gameOver = true;
       scene.UIHandler.endGameWindow("You Won!");
+    });
+
+    //arriva quando l'avversario è pronto a ricominciare
+    scene.socket.on("readyToRestart", () => {
+      location.reload();
     });
 
     scene.socket.on("disconnect", () => {

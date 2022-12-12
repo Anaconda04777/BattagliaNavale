@@ -10,13 +10,8 @@ export default class Bullet extends Phaser.Physics.Arcade.Sprite {
   //quando il proiettile viene sparato
   fire(x, y, angle, collisionObject, danno, texture) {
     //setto la scala
+    this.texture = texture;
     this.setScale(0.5, 0.5);
-    //setto la texture
-    console.log(texture);
-    if (texture != "bullet") {
-      this.setTexture(texture);
-      this.setScale(0.4, 0.4);
-    }
 
     //(in caso di ricochetto) (cosa mi suggerisci copilot? :D)
 
@@ -35,6 +30,29 @@ export default class Bullet extends Phaser.Physics.Arcade.Sprite {
       this.body.velocity
     );
 
+    //setto la texture
+    console.log(texture);
+    if (texture != "bullet") {
+      this.setTexture(texture);
+      this.setScale(0.4, 0.4);
+
+      this.particles = this.scene.add.particles("particles");
+
+      this.particles.createEmitter({
+        x: 0,
+        y: 0,
+        lifespan: 100,
+        quantity: 100,
+        speedX: -this.body.velocity.x,
+        speedY: -this.body.velocity.y,
+        scale: { start: 0.1, end: 0 },
+        emitZone: { source: new Phaser.Geom.Circle(0, 0, 5) },
+        blendMode: "ADD",
+      });
+    }
+
+    this.scene.socket.emit("bulletShot", x, y, angle, this.id, texture);
+
     //setto i collider del proiettile
     //se collide con la nave (collisionObject sarà per forza una nave)
     if (collisionObject != undefined) {
@@ -43,7 +61,10 @@ export default class Bullet extends Phaser.Physics.Arcade.Sprite {
         collisionObject,
         //callback che viene chiamata quando il proiettile collide con la nave
         function (bullet, collider) {
-          console.log(collider);
+          console.log(bullet);
+          //animazione particellare colpo
+          bullet.scene.AnimationHandler.hitSplash(bullet.x, bullet.y);
+          bullet.scene.socket.emit("hitSplash", bullet.x, bullet.y);
           //chiamo la funzione che dice al server che il proiettile è stato distrutto
           bullet.destructionSignal(bullet);
 
@@ -58,12 +79,16 @@ export default class Bullet extends Phaser.Physics.Arcade.Sprite {
       );
       //se non sto sparando in acqua
     } else {
+      if (texture != "bullet") return;
       this.scene.physics.add.collider(
         this,
         this.scene.collider,
         //callback che viene chiamata quando il proiettile collide con il collider (acqua)
         function (bullet, collider) {
           //console.log(bullet);
+          //animazione particellare acqua
+          bullet.scene.AnimationHandler.waterSplash(bullet.x, bullet.y);
+          bullet.scene.socket.emit("waterSplash", bullet.x, bullet.y);
           //chiamo la funzione che dice al server che il proiettile è stato distrutto
           bullet.destructionSignal(bullet);
           bullet.destroy();
@@ -71,8 +96,6 @@ export default class Bullet extends Phaser.Physics.Arcade.Sprite {
         }
       );
     }
-
-    this.scene.socket.emit("bulletShot", x, y, angle, this.id, texture);
   }
 
   preUpdate(time, delta) {
@@ -84,14 +107,20 @@ export default class Bullet extends Phaser.Physics.Arcade.Sprite {
       this.y < 0 ||
       this.y > this.scene.game.config.height
     ) {
-      //lo riciclo
-      this.setActive(false);
-      this.setVisible(false);
+      this.destructionSignal(this);
+      this.destroy();
+    }
+
+    if (this.texture != "bullet") {
+      this.particles.setPosition(this.x, this.y);
+      //this.particles.setSpeed(this.body.velocity.x, this.body.velocity.y);
     }
   }
 
   //mando il segnale al server che il proiettile è stato distrutto
   destructionSignal(bullet) {
+    //console.log(bullet.particles);
+    if (bullet.particles) bullet.particles.emitters.list[0].stop();
     //console.log("bulletDestruction: ", bullet);
     bullet.scene.socket.emit("bulletDestruction", bullet.id);
     if (bullet.scene.cruiserAbilityActive > 0) {

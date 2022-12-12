@@ -50,6 +50,8 @@ export default class Game extends Phaser.Scene {
     this.load.image("carrierAbility", "src/assets/carrierAbility.png");
 
     this.load.image("spotSignal", "src/assets/spotSignal.png");
+
+    this.load.image("particles", "src/assets/particles.png");
   }
 
   create() {

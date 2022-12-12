@@ -249,14 +249,16 @@ export default class UIHandler {
       );
 
       scene.endGameText = scene.add
-        .text(scene.scale.width / 2, scene.scale.height / 2, text) //"You win!"
+        .text(scene.scale.width / 2 - 108.5, scene.scale.height / 2 - 57, text) //"You win!"
         .setFontSize(50)
         .setFontFamily("Arial")
         .setColor("#ffffff")
         .setStroke("#000000", 2);
 
+      console.log(scene.endGameText);
+
       scene.restartButton = scene.add
-        .text(scene.scale.width / 2, scene.scale.height / 2 + 50, "Restart")
+        .text(scene.scale.width / 2 - 54.25, scene.scale.height / 2, "Restart")
         .setFontSize(30)
         .setFontFamily("Arial")
         .setColor("#ffffff")
@@ -264,7 +266,9 @@ export default class UIHandler {
         .setInteractive();
 
       scene.restartButton.on("pointerdown", function () {
-        scene.socket.emit("readyToRestart");
+        scene.socket.emit("readyToRestart", scene.player.player.id);
+        scene.restartButton.setText("Waiting");
+        scene.restartButton.disableInteractive();
       });
       scene.restartButton.on("pointerover", function () {
         scene.restartButton.setColor("#ff0000");

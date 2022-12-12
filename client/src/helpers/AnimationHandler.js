@@ -79,4 +79,51 @@ export default class AnimationHandler {
       },
     });
   }
+
+  waterSplash(x, y) {
+    const particles = this.scene.add.particles("particles");
+    const waterSplash = particles.createEmitter({
+      x: x,
+      y: y,
+      speed: 100,
+      scale: { start: 0.1, end: 0 },
+      blendMode: "NORMAL",
+      lifespan: 200,
+      quantity: 1,
+      alpha: { start: 1, end: 0 },
+      angle: { min: 0, max: 360 },
+      rotate: { min: 0, max: 360 },
+      emitZone: { source: new Phaser.Geom.Circle(0, 0, 5) },
+      tint: 0x2b6ca1,
+    });
+    console.log(waterSplash);
+    waterSplash.explode(1000, x, y);
+  }
+
+  hitSplash(x, y) {
+    const particles = this.scene.add.particles("particles");
+    const fireSplash = particles.createEmitter({
+      x: x,
+      y: y,
+      speed: 100,
+      scale: { start: 0.1, end: 0 },
+      blendMode: "NORMAL",
+      lifespan: 200,
+      alpha: { start: 1, end: 0 },
+      angle: { min: 0, max: 360 },
+      rotate: { min: 0, max: 360 },
+      emitZone: { source: new Phaser.Geom.Circle(0, 0, 5) },
+      tint: [0xffba08, 0xe85d04, 0xdc2f02],
+    });
+    console.log(fireSplash);
+    fireSplash.explode(2000, x, y);
+  }
+
+  deathAnimation(shipX, shipY) {
+    for (let i = 0; i < 3; i++) {
+      let x = Phaser.Math.Between(shipX - 3, shipX + 3);
+      let y = Phaser.Math.Between(shipY - 3, shipY + 3);
+      this.hitSplash(x, y);
+    }
+  }
 }
