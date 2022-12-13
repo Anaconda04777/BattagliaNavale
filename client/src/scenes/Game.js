@@ -31,11 +31,11 @@ export default class Game extends Phaser.Scene {
 
   preload() {
     //l'import non è casesensitive
-    this.load.image("Battleship", "src/assets/Battleship.png");
-    this.load.image("Cruiser", "src/assets/Cruiser.png");
-    this.load.image("Destroyer", "src/assets/Destroyer.png");
-    this.load.image("Som", "src/assets/Som.png");
-    this.load.image("AircraftCarrier", "src/assets/AircraftCarrier.png");
+    this.load.image("Battleship", "src/assets/Battleship.svg");
+    this.load.image("Cruiser", "src/assets/Cruiser.svg");
+    this.load.image("Destroyer", "src/assets/Destroyer.svg");
+    this.load.image("Som", "src/assets/Som.svg");
+    this.load.image("AircraftCarrier", "src/assets/AircraftCarrier.svg");
 
     this.load.image("bullet", "src/assets/bullet.png");
     this.load.image("torpedo", "src/assets/torpedo.png");

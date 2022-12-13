@@ -117,14 +117,13 @@ export default class UIHandler {
         )
         .setFontSize(13)
         .setFontFamily("Arial");
-      console.log(scene.navyInformationTxt);
 
       scene.navyInformationImage = scene.add.image(
-        scene.scale.width / 2 - 85,
+        scene.scale.width / 2 - scene.InputHandler.focus.width,
         scene.scale.height - 40,
         "Battleship"
       );
-
+      console.log(scene.navyInformationImage);
       scene.statsText = scene.add
         .text(0, 0, "Statistiche")
         .setFontSize(13)

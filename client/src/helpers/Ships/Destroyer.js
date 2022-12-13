@@ -11,7 +11,7 @@ export default class Destroyer extends Ship {
       ourShip,
       70,
       "destroyerAbility",
-      5,
+      4,
       name
     );
   }
@@ -33,19 +33,6 @@ export default class Destroyer extends Ship {
 
     this.scene.GameHandler.changeTurn();
     this.scene.socket.emit("changeTurn");
-  }
-
-  update() {
-    //sposto la shape statica in base alla posizione della sprite
-    //se la nave è in verticale devo invertire i fattori di sottrazione
-    //aggiunta di fattori dovuto a bug della posizione dopo il movimento con gli angoli
-    if (this.dir) {
-      this.bodyReference.body.y = this.bodyReference.y - 13;
-      this.bodyReference.body.x = this.bodyReference.x - 50;
-    } else {
-      this.bodyReference.body.y = this.bodyReference.y - 50;
-      this.bodyReference.body.x = this.bodyReference.x - 13;
-    }
   }
 
   getRandomProperty(obj) {

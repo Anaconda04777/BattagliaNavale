@@ -13,10 +13,10 @@ export default class InputHandler {
       //che non sia la zona del nostro campo
       //che non sia una nave avversaria
       console.log(gameObject);
+
       if (gameObject[0] !== undefined) {
         if (gameObject[0].type != "Sprite") {
           return;
-          //TODO: riguardare sta roba un po' strana
         } else if (gameObject[0].data.ourShip) return;
 
         //se sto tirando nell'acqua aggiungo l'oggetto che indicerà al bullet
@@ -88,6 +88,13 @@ export default class InputHandler {
             scene.carrierAbilityActive
           );
         } else {
+          /*if (scene.LogicHandler.checkLastShipAlive()) {
+            if (!scene.subAbilityActive) {
+              scene.alreadyFired = true;
+              return;
+            }
+          }*/
+
           //chiamo la funzione di sparo nella classe che gestisce i proiettili
           scene.BulletHandler.fireBullet(
             //gli passo la posizione della nave ammiraglia
@@ -102,8 +109,8 @@ export default class InputHandler {
             ),
             //la nave a cui sto sparando
             gameObject[0],
-            //danno che fa il proiettile #TODO: l'abilità che cambia il danno del proiettile è quella del som
-            scene.subAbilityActive ? 1000 : 1,
+            //danno che fa il proiettile
+            scene.subAbilityActive ? 3 : 1,
             scene.subAbilityActive ? "torpedo" : "bullet"
           );
         }
@@ -238,8 +245,8 @@ export default class InputHandler {
         this.shipOver ||
         //impedisco che la nave vada oltre il la metà campo
         //NB: il +10 è perché la x si riferisce alla metà nave, CAMBIARE con le texture nuove
-        this.focus.x > scene.scale.width / 2 - 10 ||
-        this.focus.x < 15 ||
+        this.focus.x > scene.scale.width / 2 - gameObject.width / 2 ||
+        this.focus.x < gameObject.width / 2 ||
         this.focus.y > scene.scale.height - 88 ||
         this.focus.y < 60
       ) {

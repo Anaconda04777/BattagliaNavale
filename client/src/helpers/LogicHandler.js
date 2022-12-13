@@ -98,6 +98,19 @@ export default class LogicHandler {
       return s4() + s4() + "-" + s4() + "-" + s4() + "-" + s4();
     };
 
+    /*this.checkLastShipAlive = () => {
+      let shipRemaning = 0;
+      Object.values(scene.player.player.flotta).map((item) => {
+        if (item.hp > 0) {
+          shipRemaning++;
+        }
+      });
+      if (shipRemaning === 1 && scene.player.player.flotta.submarine.hp > 0) {
+        return true;
+      }
+      return false;
+    };*/
+
     //funzione asincrona che rimuove oggetto dopo un po'
     async function removeThis(obj) {
       await new Promise((resolve) => setTimeout(resolve, 15000));

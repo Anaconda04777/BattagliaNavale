@@ -51,6 +51,8 @@ export default class AnimationHandler {
       duration: 1500,
       ease: "Power1",
       onComplete: function () {
+        bomb.scene.AnimationHandler.hitSplash(bomb.x, bomb.y);
+        bomb.scene.socket.emit("hitSplash", bomb.x, bomb.y);
         bomb.destroy();
       },
     });

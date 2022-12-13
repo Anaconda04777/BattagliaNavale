@@ -89,6 +89,23 @@ export default class Ship {
     );
   }
 
+  update() {
+    //sposto la shape statica in base alla posizione della sprite
+    //se la nave è in verticale devo invertire i fattori di sottrazione
+    //aggiunta di fattori dovuto a bug della posizione dopo il movimento con gli angoli
+    if (this.dir) {
+      this.bodyReference.body.y =
+        this.bodyReference.y - this.bodyReference.height / 2;
+      this.bodyReference.body.x =
+        this.bodyReference.x - this.bodyReference.width / 2;
+    } else {
+      this.bodyReference.body.y =
+        this.bodyReference.y - this.bodyReference.width / 2;
+      this.bodyReference.body.x =
+        this.bodyReference.x - this.bodyReference.height / 2;
+    }
+  }
+
   shipHit(danno) {
     this.hp -= danno;
     console.log("Ship hit: ", this.hp);
@@ -150,10 +167,22 @@ export default class Ship {
     //console.log("sto testando: " + x + ", " + y);
     return (
       this.bodyReference.body.hitTest(x, y) ||
-      this.bodyReference.body.hitTest(x + 15, y + 15) ||
-      this.bodyReference.body.hitTest(x - 15, y - 15) ||
-      this.bodyReference.body.hitTest(x + 15, y - 15) ||
-      this.bodyReference.body.hitTest(x - 15, y + 15)
+      this.bodyReference.body.hitTest(
+        x + this.bodyReference.width / 2,
+        y + this.bodyReference.height / 2
+      ) ||
+      this.bodyReference.body.hitTest(
+        x - this.bodyReference.width / 2,
+        y - this.bodyReference.height / 2
+      ) ||
+      this.bodyReference.body.hitTest(
+        x + this.bodyReference.width / 2,
+        y - this.bodyReference.height / 2
+      ) ||
+      this.bodyReference.body.hitTest(
+        x - this.bodyReference.width / 2,
+        y + this.bodyReference.height / 2
+      )
     );
   }
 }
