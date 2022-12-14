@@ -57,7 +57,7 @@ const io = require("socket.io")(http, {
   //consento la comuniazione con il client dal nostro server
   cors: {
     //mettere link della distribuzione (farlo anche nel sockethandler)
-    origin: "http://localhost:8080",
+    origin: "https://battaglianavle1.herokuapp.com/",
     methods: ["GET", "POST"],
   },
 });
