@@ -2,7 +2,7 @@ import io from "socket.io-client";
 
 export default class SocketHandler {
   constructor(scene) {
-    scene.socket = io("https://battaglianavle1.herokuapp.com/");
+    scene.socket = io("http://localhost:3000");
     //console.log(scene.socket);
 
     scene.enemyBullet = {};
