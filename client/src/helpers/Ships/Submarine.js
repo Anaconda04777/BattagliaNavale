@@ -2,6 +2,7 @@ import Ship from "./Ship";
 
 export default class Submarine extends Ship {
   constructor(scene, x, y, ourShip, name) {
+    //5
     super(scene, "Som", 1, x, y, ourShip, 40, "subAbility", 5, name);
   }
 

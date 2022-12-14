@@ -165,5 +165,11 @@ export default class Game extends Phaser.Scene {
     //console.log(this.enemyBullet);
     this.LogicHandler.checkVisibilitiOfBullet(this.enemyBullet);
     this.LogicHandler.checkVisibilitiOfBullet(this.enemyPlane);
+
+    /*if (this.enemyBullet.length > 0) {
+      this.enemyBullet.forEach((bullet) => {
+        console.log(bullet);
+        this.animationPlayer.particles.setPosition(bullet.x, bullet.y);
+      });*/
   }
 }

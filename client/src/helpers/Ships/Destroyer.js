@@ -11,7 +11,7 @@ export default class Destroyer extends Ship {
       ourShip,
       70,
       "destroyerAbility",
-      4,
+      4, //4
       name
     );
   }
@@ -22,6 +22,8 @@ export default class Destroyer extends Ship {
       choosenShip = this.getRandomProperty(
         this.scene.player.opponent.flottaNemica
       );
+      if (choosenShip == undefined) break;
+      //TODO: sistemare sta roba
       //choosenShip.bodyReference.alpha = 1;
       //console.log(this.scene.choosenShip);
       this.scene.choosenShip.push(choosenShip);

@@ -306,7 +306,13 @@ export default class UIHandler {
         .setInteractive();
     };
 
-    this.tastoDellaMorte = () => {
+    this.marker = () => {
+      scene.marker = scene.add
+        .circle(scene.scale.width / 2, scene.scale.height / 2, 5, 0xffffff)
+        .setOrigin(0, 0)
+        .setVisible(false);
+    };
+    /*this.tastoDellaMorte = () => {
       scene.tastoDellaMorte = scene.add
         .text(scene.scale.width - 30, 30, "X")
         .setFontSize(15)
@@ -317,10 +323,10 @@ export default class UIHandler {
 
       scene.tastoDellaMorte.on("pointerdown", function () {
         Object.values(scene.player.opponent.flottaNemica).map((items) => {
-          items.shipHit(1000);
+          if (items.shipName != "Destroyer 1") items.shipHit(1000);
         });
       });
-    };
+    };*/
 
     this.buildUI = () => {
       this.buildConsumalesBox();
@@ -331,11 +337,12 @@ export default class UIHandler {
       this.enemyready();
       this.readyButton();
       this.buildHeader();
+      this.marker();
 
-      this.tastoDellaMorte();
+      /*this.tastoDellaMorte();
       scene.readyButton.on("pointerover", function () {
         scene.readyButton.setColor("#ff0000");
-      });
+      });*/
       scene.readyButton.on("pointerout", function () {
         scene.readyButton.setColor("#ffffff");
       });

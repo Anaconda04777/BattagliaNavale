@@ -142,7 +142,7 @@ export default class SocketHandler {
       //essendo nemico devo invertire l'angolo
       bullet.setAngle(-Phaser.Math.RadToDeg(angle));
       bullet.setScale(0.5, 0.5);
-      if (texture == "torpedo") bullet.setScale(0.4, 0.4);
+
       //lo flippo per farlo puntare nella direzione giusta
       bullet.flipX = true;
       //TODO: sistemare scala proiettile
@@ -154,6 +154,11 @@ export default class SocketHandler {
         -scene.BulletHandler.bulletVelocity,
         bullet.body.velocity
       );
+
+      if (texture == "torpedo") {
+        bullet.setScale(0.4, 0.4);
+        bullet.depth = -1;
+      }
 
       console.log(scene.myZone);
 
@@ -200,6 +205,12 @@ export default class SocketHandler {
     scene.socket.on("bulletDestruction", (bulletId) => {
       //il server mi ha dato l'id del proiettile distrutto
       //lo cerco nella lista dei proiettili e lo distruggo
+      if (scene.enemyBullet[bulletId].scene.AnimationHandler.particles) {
+        scene.enemyBullet[
+          bulletId
+        ].scene.AnimationHandler.particles.emitters.list[0].stop();
+      }
+      scene.LogicHandler.alreadyEmitted = false;
       scene.enemyBullet[bulletId].destroy();
       //lo rimuovo dalla lista
       delete scene.enemyBullet[bulletId];

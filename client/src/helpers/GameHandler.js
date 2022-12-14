@@ -58,16 +58,23 @@ export default class GameHandler {
       });
     };
 
+    //nascondo le navi scoperte con l'abilità del destroyer, a fine turno
     this.checkDestroyerAbility = () => {
       //console.log(scene.choosenShip);
-      if (scene.choosenShip.length >= 2) {
+      scene.choosenShip.map((ship) => {
+        this.animationPlayer.hideShip(ship.bodyReference);
+      });
+      scene.choosenShip = [];
+      console.log(scene.choosenShip);
+
+      /*if (scene.choosenShip.length >= 2) {
         //alpha a 0.0000001 perché se no con 0 non mi fa cliccare sulle navi
         this.animationPlayer.hideShip(scene.choosenShip[0].bodyReference);
         this.animationPlayer.hideShip(scene.choosenShip[1].bodyReference);
 
         scene.choosenShip.splice(0, 2);
         console.log(scene.choosenShip);
-      }
+      }*/
     };
 
     this.checkAirCraftAbility = () => {

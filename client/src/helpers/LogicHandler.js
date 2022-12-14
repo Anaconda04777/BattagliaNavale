@@ -69,7 +69,23 @@ export default class LogicHandler {
         Object.values(object).map((item) => {
           if (item.x > scene.scale.width / 2) {
             item.visible = false;
-          } else item.visible = true;
+          } else {
+            item.visible = true;
+            if (item.texture.key === "torpedo" && !this.alreadyEmitted) {
+              item.scene.AnimationHandler.torpedoAnimation(
+                item.body.velocity.x,
+                item.body.velocity.y
+              );
+
+              item.preUpdate = function () {
+                item.scene.AnimationHandler.particles.setPosition(
+                  item.x,
+                  item.y
+                );
+              };
+              this.alreadyEmitted = true;
+            }
+          }
         });
       }
     };

@@ -30,25 +30,17 @@ export default class Bullet extends Phaser.Physics.Arcade.Sprite {
       this.body.velocity
     );
 
+    this.scene.AnimationHandler.torpedoAnimation(
+      this.body.velocity.x,
+      this.body.velocity.y
+    );
+
     //setto la texture
     console.log(texture);
     if (texture != "bullet") {
       this.setTexture(texture);
       this.setScale(0.4, 0.4);
-
-      this.particles = this.scene.add.particles("particles");
-
-      this.particles.createEmitter({
-        x: 0,
-        y: 0,
-        lifespan: 100,
-        quantity: 100,
-        speedX: -this.body.velocity.x,
-        speedY: -this.body.velocity.y,
-        scale: { start: 0.1, end: 0 },
-        emitZone: { source: new Phaser.Geom.Circle(0, 0, 5) },
-        blendMode: "ADD",
-      });
+      this.depth = -1;
     }
 
     this.scene.socket.emit("bulletShot", x, y, angle, this.id, texture);
@@ -109,10 +101,11 @@ export default class Bullet extends Phaser.Physics.Arcade.Sprite {
     ) {
       this.destructionSignal(this);
       this.destroy();
+      return;
     }
 
-    if (this.texture != "bullet") {
-      this.particles.setPosition(this.x, this.y);
+    if (this.texture != "bullet" && this.scene.AnimationHandler.particles) {
+      this.scene.AnimationHandler.particles.setPosition(this.x, this.y);
       //this.particles.setSpeed(this.body.velocity.x, this.body.velocity.y);
     }
   }
@@ -120,7 +113,8 @@ export default class Bullet extends Phaser.Physics.Arcade.Sprite {
   //mando il segnale al server che il proiettile è stato distrutto
   destructionSignal(bullet) {
     //console.log(bullet.particles);
-    if (bullet.particles) bullet.particles.emitters.list[0].stop();
+    bullet.scene.AnimationHandler.particles.emitters.list[0].stop();
+
     //console.log("bulletDestruction: ", bullet);
     bullet.scene.socket.emit("bulletDestruction", bullet.id);
     if (bullet.scene.cruiserAbilityActive > 0) {

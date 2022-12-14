@@ -25,7 +25,7 @@ export default class InputHandler {
         scene.isMyTurn &&
         scene.gameStarted &&
         !scene.alreadyFired &&
-        !this.movedShipIsColliding
+        !this.shipInMovement
           ? scene.LogicHandler.missCollider(pointer.x, pointer.y)
           : null;
 
@@ -114,6 +114,19 @@ export default class InputHandler {
             scene.subAbilityActive ? "torpedo" : "bullet"
           );
         }
+      }
+
+      if (
+        pointer.middleButtonDown() &&
+        scene.gameStarted &&
+        !scene.alreadyFired &&
+        !this.shipInMovement
+      ) {
+        //se sto cliccando col tasto destro
+        let marker = scene.marker;
+        marker.x = pointer.x;
+        marker.y = pointer.y;
+        marker.setVisible(true);
       }
     });
 
@@ -239,16 +252,18 @@ export default class InputHandler {
 
     //quando rilascio il click
     scene.input.on("dragend", (pointer, gameObject, dropped) => {
+      console.log(this.focus.y);
+      console.log(this.focus.height);
       //se la nave è stata droppata su un'altra nave oppure fuori dal nostro campo
       if (
         !dropped ||
         this.shipOver ||
         //impedisco che la nave vada oltre il la metà campo
         //NB: il +10 è perché la x si riferisce alla metà nave, CAMBIARE con le texture nuove
-        this.focus.x > scene.scale.width / 2 - gameObject.width / 2 ||
-        this.focus.x < gameObject.width / 2 ||
-        this.focus.y > scene.scale.height - 88 ||
-        this.focus.y < 60
+        this.focus.x > scene.scale.width / 2 - this.focus.width / 2 ||
+        this.focus.x < this.focus.width / 2 ||
+        this.focus.y < this.focus.height * 4 || //scene.scale.height + 100 ||
+        this.focus.y > scene.scale.height - 100
       ) {
         //la posizione della nave viene resettata alla posizione iniziale
         gameObject.x = gameObject.input.dragStartX;

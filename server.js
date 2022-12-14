@@ -1,6 +1,7 @@
 const server = require("express")();
 const http = require("http").createServer(server);
-
+const serveStatic = require("serve-static");
+const path = require("path");
 const cors = require("cors");
 
 //genero una lista di 7 id (nuemro delle navi)
@@ -60,6 +61,9 @@ const io = require("socket.io")(http, {
     methods: ["GET", "POST"],
   },
 });
+
+server.use(cors());
+server.use(serveStatic(__dirname + "/client/dist"));
 
 //quando un client si connette
 io.on("connection", function (socket) {
@@ -211,7 +215,7 @@ io.on("connection", function (socket) {
   };
 });
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 http.listen(port, function () {
   console.log("Server started!");

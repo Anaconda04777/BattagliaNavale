@@ -121,6 +121,22 @@ export default class AnimationHandler {
     fireSplash.explode(2000, x, y);
   }
 
+  torpedoAnimation(bodyVelocityX, bodyVelocityY) {
+    this.particles = this.scene.add.particles("particles");
+    this.particles.depth = -1;
+    this.particles.createEmitter({
+      x: 0,
+      y: 0,
+      lifespan: 100,
+      quantity: 100,
+      speedX: -bodyVelocityX, //-this.body.velocity.x,
+      speedY: -bodyVelocityY, //-this.body.velocity.y,
+      scale: { start: 0.1, end: 0 },
+      emitZone: { source: new Phaser.Geom.Circle(0, 0, 5) },
+      blendMode: "ADD",
+    });
+  }
+
   deathAnimation(shipX, shipY) {
     for (let i = 0; i < 3; i++) {
       let x = Phaser.Math.Between(shipX - 3, shipX + 3);
